@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elemento Maestro</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        #tablaPuntos {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        #tablaPuntos th, #tablaPuntos td {
+            border: 1px solid black;
+            padding: 10px;
+            background: #f8f8f8;
+        }
+        #tablaPuntos th {
+            background: #007BFF;
+            color: white;
+        }
+        #retroalimentacion {
+            font-size: 18px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .correcto {
+            color: green;
+        }
+        .incorrecto {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Elemento Maestro</h1>
+        <h2>Reglas del Juego</h2>
+        <p>Responde correctamente a las preguntas sobre la tabla periódica para ganar puntos.</p>
+        <h2>Cómo Jugar</h2>
+        <p>Recibe una pregunta, escribe tu respuesta y gana puntos si es correcta.</p>
+        
+        <h2>Pregunta:</h2>
+        <p id="pregunta"></p>
+        <input type="text" id="respuesta" placeholder="Tu respuesta aquí">
+        <button onclick="verificarRespuesta()">Responder</button>
+        
+        <h2>Tabla de Puntos</h2>
+        <table id="tablaPuntos">
+            <tr>
+                <th>Jugador</th>
+                <th>Puntos</th>
+            </tr>
+            <tr>
+                <td>Jugador</td>
+                <td id="puntos">0</td>
+            </tr>
+        </table>
+
+        <p id="retroalimentacion"></p> <!-- Mensaje de retroalimentación -->
+    </div>
+    
+    <script>
+        const preguntas = [
+            { pregunta: "¿Cuál es el símbolo del Oxígeno?", respuesta: "O" },
+            { pregunta: "¿Cuál es el número atómico del Hidrógeno?", respuesta: "1" },
+            { pregunta: "¿Qué elemento tiene el símbolo 'Na'?", respuesta: "Sodio" },
+            { pregunta: "¿Qué gas noble tiene número atómico 10?", respuesta: "Neon" },
+            { pregunta: "¿Cuál es el metal más ligero?", respuesta: "Litio" },
+            { pregunta: "¿Qué elemento tiene el número atómico 79?", respuesta: "Oro" },
+            { pregunta: "¿Cuál es el elemento químico con símbolo 'Fe'?", respuesta: "Hierro" },
+            { pregunta: "¿Qué elemento es el principal componente del aire?", respuesta: "Nitrogeno" },
+            { pregunta: "¿Cuál es el símbolo del Plomo?", respuesta: "Pb" },
+            { pregunta: "¿Qué elemento se usa en termómetros tradicionales?", respuesta: "Mercurio" },
+            { pregunta: "¿Cuál es el número atómico del Carbono?", respuesta: "6" },
+            { pregunta: "¿Qué elemento se usa para fabricar cables eléctricos?", respuesta: "Cobre" },
+            { pregunta: "¿Cuál es el elemento más abundante en la corteza terrestre?", respuesta: "Oxigeno" },
+            { pregunta: "¿Qué metal se encuentra en la sangre y transporta oxígeno?", respuesta: "Hierro" },
+            { pregunta: "¿Cuál es el símbolo del elemento Helio?", respuesta: "He" },
+            { pregunta: "¿Cuál es el único metal líquido a temperatura ambiente?", respuesta: "Mercurio" },
+            { pregunta: "¿Qué elemento químico se usa en las baterías recargables?", respuesta: "Litio" },
+            { pregunta: "¿Cuál es el símbolo químico del Sodio?", respuesta: "Na" },
+            { pregunta: "¿Qué gas se usa para inflar globos y que floten?", respuesta: "Helio" },
+            { pregunta: "¿Cuál es el número atómico del Oxígeno?", respuesta: "8" },
+            { pregunta: "¿Cuál es el metal más abundante en la Tierra?", respuesta: "Aluminio" },
+            { pregunta: "¿Qué elemento químico tiene el símbolo 'Zn'?", respuesta: "Zinc" },
+            { pregunta: "¿Qué gas se usa en las luces de neón?", respuesta: "Neon" },
+            { pregunta: "¿Cuál es el símbolo químico del Cloro?", respuesta: "Cl" },
+            { pregunta: "¿Qué elemento tiene el número atómico 92?", respuesta: "Uranio" },
+            { pregunta: "¿Cuál es el símbolo del elemento Fósforo?", respuesta: "P" },
+            { pregunta: "¿Cuál es el metal más denso?", respuesta: "Osmio" },
+            { pregunta: "¿Qué elemento químico tiene el símbolo 'K'?", respuesta: "Potasio" },
+            { pregunta: "¿Qué elemento es esencial para los huesos y los dientes?", respuesta: "Calcio" },
+            { pregunta: "¿Cuál es el símbolo del elemento Plata?", respuesta: "Ag" },
+            // Nuevas preguntas añadidas:
+            { pregunta: "¿Qué elemento tiene el símbolo 'Cu'?", respuesta: "Cobre" },
+            { pregunta: "¿Cuál es el símbolo del elemento Tungsteno?", respuesta: "W" },
+            { pregunta: "¿Qué elemento tiene el número atómico 12?", respuesta: "Magnesio" },
+            { pregunta: "¿Qué gas noble tiene el número atómico 18?", respuesta: "Argón" },
+            { pregunta: "¿Cuál es el elemento más abundante en el universo?", respuesta: "Hidrógeno" },
+            { pregunta: "¿Qué elemento tiene el símbolo 'Au'?", respuesta: "Oro" },
+            { pregunta: "¿Qué metal es usado para recubrir los cables eléctricos?", respuesta: "Cobre" },
+            { pregunta: "¿Qué elemento se utiliza para fabricar baterías de litio?", respuesta: "Litio" },
+            { pregunta: "¿Qué elemento químico se usa en la fabricación de semiconductores?", respuesta: "Silicio" },
+            { pregunta: "¿Qué elemento tiene el símbolo 'Cl'?", respuesta: "Cloro" },
+            { pregunta: "¿Qué elemento tiene el número atómico 15?", respuesta: "Fósforo" },
+            { pregunta: "¿Qué metal se usa en la fabricación de monedas?", respuesta: "Cobre" },
+            { pregunta: "¿Qué elemento tiene el símbolo 'Rn'?", respuesta: "Radón" },
+            { pregunta: "¿Qué elemento tiene el número atómico 26?", respuesta: "Hierro" },
+            { pregunta: "¿Qué gas se utiliza en los tubos fluorescentes?", respuesta: "Mercurio" },
+            { pregunta: "¿Qué elemento tiene el símbolo 'Ni'?", respuesta: "Niquel" },
+            { pregunta: "¿Qué elemento tiene el número atómico 82?", respuesta: "Plomo" },
+            { pregunta: "¿Qué metal se utiliza en las aleaciones de acero?", respuesta: "Cromo" },
+            { pregunta: "¿Qué gas se usa para producir los rayos X?", respuesta: "Xenón" },
+            { pregunta: "¿Qué elemento tiene el símbolo 'I'?", respuesta: "Yodo" },
+            { pregunta: "¿Qué metal tiene el símbolo 'Ag'?", respuesta: "Plata" }
+        ];
+
+        let puntos = 0;
+        let preguntaActual = 0;
+
+        function mostrarPregunta() {
+            if (preguntaActual < preguntas.length) {
+                document.getElementById("pregunta").innerText = preguntas[preguntaActual].pregunta;
+                document.getElementById("retroalimentacion").innerText = "";  // Limpiar retroalimentación
+            } else {
+                document.getElementById("pregunta").innerText = "¡Has respondido todas las preguntas!";
+                document.getElementById("btnResponder").disabled = true;
+                document.getElementById("respuesta").disabled = true;
+            }
+        }
+
+        function verificarRespuesta() {
+            let respuestaUsuario = document.getElementById("respuesta").value.trim();
+            let retroalimentacion = document.getElementById("retroalimentacion");
+
+            if (respuestaUsuario.toLowerCase() === preguntas[preguntaActual].respuesta.toLowerCase()) {
+                puntos += 5;
+                document.getElementById("puntos").innerText = puntos;
+                retroalimentacion.innerText = "¡Respuesta correcta!";
+                retroalimentacion.className = "correcto";
+            } else {
+                retroalimentacion.innerText = "Respuesta incorrecta. Intenta de nuevo.";
+                retroalimentacion.className = "incorrecto";
+            }
+
+            preguntaActual++;
+            document.getElementById("respuesta").value = "";
+            mostrarPregunta();
+        }
+
+        mostrarPregunta();
+    </script>
+</body>
+</html>
